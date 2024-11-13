@@ -89,6 +89,69 @@ internal class Program
         Array.Sort(a, (a1, a2) => string.Compare(a1.film, a2.film)); //Ascending order via delegate
         return a;
     }
+    static Device[] SortDevice(Device[] d, string[] sortChoice)
+    {
+        IOrderedEnumerable<Device> sortedDevice = null;
+
+        foreach (var choice in sortChoice)
+        {
+            switch (choice)
+            {
+                case "film":
+                    if (sortedDevice == null)
+                    {
+                        sortedDevice = d.OrderBy(m => m.film);
+                    }
+                    else
+                    {
+                        sortedDevice = sortedDevice.ThenBy(m => m.film);
+                    }
+                    break;
+                case "country":
+                    if (sortedDevice == null)
+                    {
+                        sortedDevice = d.OrderBy(m => m.idCountry);
+                    }
+                    else
+                    {
+                        sortedDevice = sortedDevice.ThenBy(m => m.idCountry);
+                    }
+                    break;
+                case "genre":
+                    if (sortedDevice == null)
+                    {
+                        sortedDevice = d.OrderBy(m => m.idGenre);
+                    }
+                    else
+                    {
+                        sortedDevice = sortedDevice.ThenBy(m => m.idGenre);
+                    }
+                    break;
+                case "filmNumber":
+                    if (sortedDevice == null)
+                    {
+                        sortedDevice = d.OrderBy(m => m.filmNumber);
+                    }
+                    else
+                    {
+                        sortedDevice = sortedDevice.ThenBy(m => m.filmNumber);
+                    }
+                    break;
+                case "date":
+                    if (sortedDevice == null)
+                    {
+                        sortedDevice = d.OrderBy(m => m.date);
+                    }
+                    else
+                    {
+                        sortedDevice = sortedDevice.ThenBy(m => m.date);
+                    }
+                    break;
+            }
+        }
+        d = sortedDevice?.ToArray();
+        return d;
+    }
     static Device[] SortByFilmNumber(Device[] a)
     {
         Device temp;
@@ -1221,7 +1284,8 @@ internal class Program
                                         {
                                             case 1:
                                                 Console.WriteLine("\t- User mode. Sort by name");
-
+                                                d1 = SortByFilm(d);
+                                                OutputDevice(d1, c, t, g);
                                                 break;
                                             case 2:
                                                 Console.WriteLine("\t- User mode. Sort by country");
