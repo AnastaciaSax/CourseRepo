@@ -89,11 +89,46 @@ internal class Program
         Array.Sort(a, (a1, a2) => string.Compare(a1.film, a2.film)); //Ascending order via delegate
         return a;
     }
-    static Device[] SortDevice(Device[] d, string[] sortChoice)
+    static string[] EnterSortChoices()
     {
-        IOrderedEnumerable<Device> sortedDevice = null;
+        string[] sortChoices;
+        while (true)
+        {
+            List<string> sortChoicesList = new List<string>();
+            string sortChoice = ChoiceCheckEdit(5);
+            if (string.IsNullOrEmpty(sortChoice))
+            {
+                sortChoices = sortChoicesList.ToArray();
+                break;
+            }
+            if (sortChoice == "1")
+            {
+                sortChoicesList.Add("film");
+            }
+            if (sortChoice == "2")
+            {
+                sortChoicesList.Add("country");
+            }
+            if (sortChoice == "3")
+            {
+                sortChoicesList.Add("genre");
+            }
+            if (sortChoice == "4")
+            {
+                sortChoicesList.Add("filmNumber");
+            }
+            if (sortChoice == "5")
+            {
+                sortChoicesList.Add("date");
+            }
+        }
+        return sortChoices;
+    }
+    static Device[] SortDevice(Device[] d, string[] sortChoices)
+    {
+        IOrderedEnumerable<Device> sortedDevice = null; //sort in sort
 
-        foreach (var choice in sortChoice)
+        foreach (var choice in sortChoices)
         {
             switch (choice)
             {
@@ -784,6 +819,8 @@ internal class Program
             string[] t = InputCountryOrGenreOrType(dataBaseType); string[] t1;
 
             int choice;
+            string sortChoice;
+            string[] sortChoices;
             bool flag, flag1, flag2;
             while (true)
             {
@@ -1271,42 +1308,20 @@ internal class Program
                                     while (flag1)
                                     {
                                         Console.WriteLine("\t- User mode. Sort option");
-                                        Console.WriteLine("Please, pick a kind of sort:");
+                                        Console.WriteLine("Please, pick kinds of sort or press ENTER:");
                                         Console.WriteLine("1)By name");
                                         Console.WriteLine("2)By country");
                                         Console.WriteLine("3)By genre");
                                         Console.WriteLine("4)By film amount");
                                         Console.WriteLine("5)By date");
-                                        Console.WriteLine("6)Back");
-                                        choice = ChoiceCheck(6);
+                                        sortChoices = EnterSortChoices();
                                         Console.Clear();
-                                        switch (choice)
-                                        {
-                                            case 1:
-                                                Console.WriteLine("\t- User mode. Sort by name");
-                                                d1 = SortByFilm(d);
-                                                OutputDevice(d1, c, t, g);
-                                                break;
-                                            case 2:
-                                                Console.WriteLine("\t- User mode. Sort by country");
-
-                                                break;
-                                            case 3:
-                                                Console.WriteLine("\t- User mode. Sort by genre");
-
-                                                break;
-                                            case 4:
-                                                Console.WriteLine("\t- User mode. Sort by film amount");
-
-                                                break;
-                                            case 5:
-                                                Console.WriteLine("\t- User mode. Sort by date");
-
-                                                break;
-                                            case 6:
-                                                flag1 = false;
-                                                continue;
-                                        }
+                                        Console.WriteLine("\t- User mode. Sort");
+                                        d1 = SortDevice(d, sortChoices);
+                                        OutputDevice(d1,c,t,g);
+                                        Console.WriteLine("Press ENTER to continue");
+                                        Console.ReadLine();
+                                        flag1 = false;
                                     }
                                     break;
                                 case 2:
@@ -1326,19 +1341,43 @@ internal class Program
                                         {
                                             case 1:
                                                 Console.WriteLine("\t- User mode. Filtration by type");
-
+                                                Console.WriteLine("Please, pick a type:");
+                                                OutputCountryOrGenreOrType(t);
+                                                choice = ChoiceCheck(t.Length);
+                                                d1 = FiltrationByType(d, choice);
+                                                OutputDevice(d1, c, t, g);
+                                                Console.WriteLine("Press ENTER to continue");
+                                                Console.ReadLine();
                                                 break;
                                             case 2:
                                                 Console.WriteLine("\t- User mode. Filtration by name");
-
+                                                Console.WriteLine("Please, pick a name:");
+                                                FilmList(d, out string[] films);
+                                                choice = ChoiceCheck(films.Length);
+                                                d1= FiltrationByFilm(d, choice, films);
+                                                OutputDevice(d1, c, t, g);
+                                                Console.WriteLine("Press ENTER to continue");
+                                                Console.ReadLine();
                                                 break;
                                             case 3:
                                                 Console.WriteLine("\t- User mode. Filtration by genre");
-
+                                                Console.WriteLine("Please, pick a genre:");
+                                                OutputCountryOrGenreOrType(g);
+                                                choice = ChoiceCheck(g.Length);
+                                                d1 = FiltrationByGenre(d, choice);
+                                                OutputDevice(d1, c, t, g);
+                                                Console.WriteLine("Press ENTER to continue");
+                                                Console.ReadLine();
                                                 break;
                                             case 4:
                                                 Console.WriteLine("\t- User mode. Filtration by owner");
-
+                                                Console.WriteLine("Please, pick an owner:");
+                                                OwnerList(d, out string[] owners);
+                                                choice = ChoiceCheck(owners.Length);
+                                                d1 = FiltrationByOwner(d, choice, owners);
+                                                OutputDevice(d1, c, t, g);
+                                                Console.WriteLine("Press ENTER to continue");
+                                                Console.ReadLine();
                                                 break;
                                             case 5:
                                                 flag1 = false;
