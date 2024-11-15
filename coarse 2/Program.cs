@@ -92,9 +92,9 @@ internal class Program
     static string[] EnterSortChoices()
     {
         string[] sortChoices;
+        List<string> sortChoicesList = new List<string>();
         while (true)
         {
-            List<string> sortChoicesList = new List<string>();
             string sortChoice = ChoiceCheckEdit(5);
             if (string.IsNullOrEmpty(sortChoice))
             {
@@ -186,67 +186,6 @@ internal class Program
         }
         d = sortedDevice?.ToArray();
         return d;
-    }
-    static Device[] SortByFilmNumber(Device[] a)
-    {
-        Device temp;
-        for (int i = 0; i < a.Length; i++)
-        {
-            for (int j = i + 1; j < a.Length; j++)
-            {
-                if (a[i].filmNumber > a[j].filmNumber)
-                {
-                    temp = a[i];
-                    a[i] = a[j];
-                    a[j] = temp;
-                }
-            }
-        }
-        return a;
-    }
-    static Device[] SortByCountry(Device[] a)
-    {
-        Device temp;
-        for (int i = 0; i < a.Length; i++)
-        {
-            for (int j = i + 1; j < a.Length; j++)
-            {
-                if (a[i].idCountry > a[j].idCountry)
-                {
-                    temp = a[i];
-                    a[i] = a[j];
-                    a[j] = temp;
-                }
-            }
-        }
-        return a;
-    }
-    static Device[] SortByGenre(Device[] a)
-    {
-        Device temp;
-        for (int i = 0; i < a.Length; i++)
-        {
-            for (int j = i + 1; j < a.Length; j++)
-            {
-                if (a[i].idGenre > a[j].idGenre)
-                {
-                    temp = a[i];
-                    a[i] = a[j];
-                    a[j] = temp;
-                }
-            }
-        }
-        return a;
-    }
-    static Device[] SortByDate(Device[] a)
-    {
-        Array.Sort(a, (a1, a2) =>
-        {
-            DateTime d1 = DateTime.ParseExact(a1.date, "dd.MM.yy", null);
-            DateTime d2 = DateTime.ParseExact(a2.date, "dd.MM.yy", null);
-            return DateTime.Compare(d1, d2);
-        });
-        return a;
     }
     static Device[] InputDataDevice(Device[] a, string[] t, string[] c, string[] g) //create
     {
@@ -497,6 +436,7 @@ internal class Program
         if (string.IsNullOrEmpty(n))
         {
             l = a[i].filmNumber;
+            return l;
         }
         l = Convert.ToInt32(n);
         return l;
@@ -809,6 +749,26 @@ internal class Program
         Device[] d1 = dl.ToArray();
         return d1;
     }
+    static void OptionFilmsByGenre(Device[] d,string[] c, string[] t, string[] g)
+    {
+        string[] sc = { "genre", "film" };
+        d = SortDevice(d,sc);
+        for (int i=0;i<g.Length;++i)
+        {
+            int count = 0;
+            Console.WriteLine($"{g[i]}");
+            for (int j = 0; j < d.Length; ++j)
+            {
+                if (d[j].idGenre == i+1)
+                {
+                    ++count;
+                    string type = IdIntoString(t, d[j].idType);
+                    string country = IdIntoString(c, d[j].idCountry);
+                    Console.WriteLine($"{count})Film - {d[j].film}\tCountry - {country}\tType - {type}");
+                }
+            }
+        }
+    }
     private static void Main(string[] args)
     {
         if (File.Exists(dataBaseDevice) && File.Exists(dataBaseCountry) && File.Exists(dataBaseGenre) && File.Exists(dataBaseType))
@@ -832,6 +792,7 @@ internal class Program
                 Console.WriteLine("3)Advanced option");
                 Console.WriteLine("4)Exit");
                 choice = ChoiceCheck(4);
+                Console.Clear();
                 switch (choice)
                 {
                     case 1:
@@ -852,6 +813,7 @@ internal class Program
                                     flag1 = true;
                                     while (flag1)
                                     {
+                                        Console.Clear();
                                         Console.WriteLine("\t- Admin mode. Create option");
                                         Console.WriteLine("Please, pick an object:");
                                         Console.WriteLine("1)Device");
@@ -985,6 +947,7 @@ internal class Program
                                     flag1 = true;
                                     while (flag1)
                                     {
+                                        Console.Clear();
                                         Console.WriteLine("\t- Admin mode. Delete option");
                                         Console.WriteLine("Please, pick an object:");
                                         Console.WriteLine("1)Device");
@@ -1136,6 +1099,7 @@ internal class Program
                                     flag1 = true;
                                     while (flag1)
                                     {
+                                        Console.Clear();
                                         Console.WriteLine("\t- Admin mode. Edit option");
                                         Console.WriteLine("Please, pick an object:");
                                         Console.WriteLine("1)Device");
@@ -1295,6 +1259,7 @@ internal class Program
                         flag = true;
                         while (flag)
                         {
+                            Console.Clear();
                             Console.WriteLine("\t- User mode. Please, pick an option from the list:");
                             Console.WriteLine("1)Sort");
                             Console.WriteLine("2)Filtration");
@@ -1328,6 +1293,7 @@ internal class Program
                                     flag1 = true;
                                     while (flag1)
                                     {
+                                        Console.Clear();
                                         Console.WriteLine("\t- User mode. Filtration option");
                                         Console.WriteLine("Please, pick a kind of filtration:");
                                         Console.WriteLine("1)By type");
@@ -1395,6 +1361,7 @@ internal class Program
                         flag = true;
                         while (flag)
                         {
+                            Console.Clear();
                             Console.WriteLine("\t- Advanced option mode");
                             Console.WriteLine("Please, pick a task to run:");
                             Console.WriteLine("1)Films by genre");
@@ -1408,7 +1375,7 @@ internal class Program
                             {
                                 case 1:
                                     Console.WriteLine("\t- Advanced option mode. Films by genre");
-
+                                    OptionFilmsByGenre(d, c, t, g);
                                     Console.WriteLine("Wish to save the report into the the data base?");
                                     flag1 = true;
                                     while (flag1)
@@ -1420,7 +1387,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                SaveClient(d1);
+                                                //SaveClient(d1);
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1446,7 +1413,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                SaveClient(d1);
+                                                //SaveClient(d1);
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1472,7 +1439,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                SaveClient(d1);
+                                                //SaveClient(d1);
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1498,7 +1465,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                SaveClient(d1);
+                                                //SaveClient(d1);
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
