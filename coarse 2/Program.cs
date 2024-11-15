@@ -84,12 +84,7 @@ internal class Program
         dev.note = n;
         return dev;
     }
-    static Device[] SortByFilm(Device[] a) //sorts
-    {
-        Array.Sort(a, (a1, a2) => string.Compare(a1.film, a2.film)); //Ascending order via delegate
-        return a;
-    }
-    static string[] EnterSortChoices()
+    static string[] EnterSortChoices()//sorts
     {
         string[] sortChoices;
         List<string> sortChoicesList = new List<string>();
@@ -183,6 +178,10 @@ internal class Program
                     }
                     break;
             }
+        }
+        if (sortedDevice == null)
+        {
+            return d;
         }
         d = sortedDevice?.ToArray();
         return d;
