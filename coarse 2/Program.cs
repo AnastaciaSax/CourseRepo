@@ -652,6 +652,100 @@ internal class Program
             }
         }
     }
+    static void SaveReportFilmsByGenre(Device[] d, string[] g, string[] c, string[] t, string reportFile)
+    {
+        string[] sc = { "genre", "film" };
+        d = SortDevice(d, sc);
+        using (StreamWriter sw = new StreamWriter(reportFile, false))
+        {
+            for (int i = 0; i < g.Length; ++i)
+            {
+                int count = 0;
+                sw.WriteLine($"{g[i]}");
+                for (int j = 0; j < d.Length; ++j)
+                {
+                    if (d[j].idGenre == i + 1)
+                    {
+                        ++count;
+                        string type = IdIntoString(t, d[j].idType);
+                        string country = IdIntoString(c, d[j].idCountry);
+                        sw.WriteLine($"{count};{d[j].film};{country};{type}");
+                    }
+                }
+            }
+        }
+    }
+    static void SaveReportFilmNumberByTypeGenre(Device[] d, string[] g, string[] t, string reportFile)
+    {
+        string[] sc = { "genre", "filmNumber" };
+        d = SortDevice(d, sc);
+        using (StreamWriter sw = new StreamWriter(reportFile, false))
+        {
+            for (int i = 0; i < t.Length; ++i)
+            {
+                int count = 0;
+                int total = 0;
+                sw.WriteLine($"{t[i]}");
+                for (int j = 0; j < d.Length; ++j)
+                {
+                    if (d[j].idType == i + 1)
+                    {
+                        ++count;
+                        total += d[j].filmNumber;
+                        string genre = IdIntoString(g, d[j].idGenre);
+                        sw.WriteLine($"{count};{genre};{d[j].filmNumber}");
+                    }
+                }
+                sw.WriteLine($"{total}");
+            }
+        }
+    }
+    static void SaveReportFilmsByOwner(Device[] d, string[] c, string[] t, string reportFile)
+    {
+        string[] sc = { "owner", "film" };
+        d = SortDevice(d, sc);
+        string[] o = OwnerArray(d);
+        using (StreamWriter sw = new StreamWriter(reportFile, false))
+        {
+            for (int i = 0; i < o.Length; ++i)
+            {
+                int count = 0;
+                sw.WriteLine($"{o[i]}");
+                for (int j = 0; j < d.Length; ++j)
+                {
+                    if (d[j].owner == o[i])
+                    {
+                        ++count;
+                        string country = IdIntoString(c, d[j].idCountry);
+                        string type = IdIntoString(t, d[j].idType);
+                        sw.WriteLine($"{count};{d[j].film};{country};{type}");
+                    }
+                }
+            }
+        }
+    }
+    static void SaveReportDeviceOverOneFilm(Device[] d, string[] c, string[] t, string reportFile)
+    {
+        string[] sc = { "country", "film", "filmNumber" };
+        d = SortDevice(d, sc);
+        using (StreamWriter sw = new StreamWriter(reportFile, false))
+        {
+            for (int i = 0; i < t.Length; ++i)
+            {
+                int count = 0;
+                sw.WriteLine($"{t[i]}");
+                for (int j = 0; j < d.Length; ++j)
+                {
+                    if (d[j].idType == i + 1 && d[j].filmNumber > 1)
+                    {
+                        ++count;
+                        string country = IdIntoString(c, d[j].idCountry);
+                        sw.WriteLine($"{count};{d[j].film};{country};{d[j].filmNumber}");
+                    }
+                }
+            }
+        }
+    }
     static Device[] FiltrationByType(Device[] d, int type) //filt
     {
         List<Device> dl = new List<Device>();
@@ -764,6 +858,68 @@ internal class Program
                     string type = IdIntoString(t, d[j].idType);
                     string country = IdIntoString(c, d[j].idCountry);
                     Console.WriteLine($"{count})Film - {d[j].film}\tCountry - {country}\tType - {type}");
+                }
+            }
+        }
+    }
+    static void OptionFilmNumberByTypeGenre(Device[] d, string[] t, string[] g)
+    {
+        string[] sc = { "genre", "filmNumber" };
+        d = SortDevice(d, sc);
+        for (int i = 0; i < t.Length; ++i)
+        {
+            int count = 0;
+            int total = 0;
+            Console.WriteLine($"{t[i]}");
+            for (int j = 0; j < d.Length; ++j)
+            {
+                if (d[j].idType == i + 1)
+                {
+                    ++count;
+                    total += d[j].filmNumber;
+                    string genre = IdIntoString(g, d[j].idGenre);
+                    Console.WriteLine($"{count})Genre - {genre}\tFilmNumber - {d[j].filmNumber}");
+                }
+            }
+            Console.WriteLine($"\tTotal film number - {total}");
+        }
+    }
+    static void OptionFilmsByOwner(Device[] d, string[] c, string[] t)
+    {
+        string[] sc = { "owner", "film" };
+        d = SortDevice(d, sc);
+        string[] o = OwnerArray(d);
+        for (int i = 0; i < o.Length; ++i)
+        {
+            int count = 0;
+            Console.WriteLine($"{o[i]}");
+            for (int j = 0; j < d.Length; ++j)
+            {
+                if (d[j].owner == o[i])
+                {
+                    ++count;
+                    string country = IdIntoString(c, d[j].idCountry);
+                    string type = IdIntoString(t, d[j].idType);
+                    Console.WriteLine($"{count})Film - {d[j].film}\tCountry - {country}\tType - {type}");
+                }
+            }
+        }
+    }
+    static void OptionDeviceOverOneFilm(Device[] d, string[] c, string[] t)
+    {
+        string[] sc = { "country", "film", "filmNumber" };
+        d = SortDevice(d, sc);
+        for (int i = 0; i < t.Length; ++i)
+        {
+            int count = 0;
+            Console.WriteLine($"{t[i]}");
+            for (int j = 0; j < d.Length; ++j)
+            {
+                if (d[j].idType == i+1 && d[j].filmNumber>1)
+                {
+                    ++count;
+                    string country = IdIntoString(c, d[j].idCountry);
+                    Console.WriteLine($"{count})Film - {d[j].film}\tCountry - {country}\tFilm number - {d[j].filmNumber}");
                 }
             }
         }
@@ -1386,7 +1542,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                //SaveClient(d1);
+                                                SaveReportFilmsByGenre(d, g,c,t, "reportFilmsByGenre.txt");
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1399,8 +1555,8 @@ internal class Program
                                     }
                                     break;
                                 case 2:
-                                    Console.WriteLine("\t- Advanced option mode. Film amount by device type & genre");
-
+                                    Console.WriteLine("\t- Advanced option mode. Film number by device type & genre");
+                                    OptionFilmNumberByTypeGenre(d,t, g);
                                     Console.WriteLine("Wish to save the report into the the data base?");
                                     flag1 = true;
                                     while (flag1)
@@ -1412,7 +1568,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                //SaveClient(d1);
+                                                SaveReportFilmNumberByTypeGenre(d, g, t, "reportFilmNumberByTypeGenre.txt");
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1426,7 +1582,7 @@ internal class Program
                                     break;
                                 case 3:
                                     Console.WriteLine("\t- Advanced option mode. Devices by owner");
-
+                                    OptionFilmsByOwner(d, c, t);
                                     Console.WriteLine("Wish to save the report into the the data base?");
                                     flag1 = true;
                                     while (flag1)
@@ -1438,7 +1594,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                //SaveClient(d1);
+                                                SaveReportFilmsByOwner(d,c,t, "reportFilmsByOwner.txt");
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
@@ -1452,7 +1608,7 @@ internal class Program
                                     break;
                                 case 4:
                                     Console.WriteLine("\t- Advanced option mode. Devices with over one film");
-
+                                    OptionDeviceOverOneFilm(d, c, t);
                                     Console.WriteLine("Wish to save the report into the the data base?");
                                     flag1 = true;
                                     while (flag1)
@@ -1464,7 +1620,7 @@ internal class Program
                                         switch (choice)
                                         {
                                             case 1:
-                                                //SaveClient(d1);
+                                                SaveReportDeviceOverOneFilm(d, c, t, "reportDeviceOverOneFilm.txt");
                                                 Console.WriteLine("The report saved successfully");
                                                 Console.WriteLine("Press ENTER to continue");
                                                 Console.ReadLine();
